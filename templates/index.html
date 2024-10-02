@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capturar Texto de Qualquer Página</title>
+    <style>
+        #responseDiv {
+            position: fixed;
+            top: 50px;
+            right: 10px;
+            background-color: #f9f9f9;
+            border: 2px solid #000;
+            padding: 10px;
+            z-index: 1000;
+            width: 300px;
+            display: none;
+        }
+
+        button {
+            background-color: blue;
+            color: white;
+            font-size: 14px;
+            border: 1px solid black;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Capturar Texto de Qualquer Página</h1>
+    <label for="urlInput">Insira a URL da página:</label>
+    <input type="text" id="urlInput" placeholder="https://example.com">
+    <button id="captureButton">Capturar Texto</button>
+
+    <div id="responseDiv"></div>
+
+    <script>
+        // Função para enviar a URL ao servidor Flask
+        function sendUrlToServer(url) {
+            fetch('http://localhost:5000/capture_text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: url })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Exibir a resposta na página
+                showResponseInPage(data);
+            })
+            .catch(error => {
+                console.error('Erro ao capturar o texto:', error);
+            });
+        }
+
+        // Função para mostrar a resposta do Flask na página
+        function showResponseInPage(response) {
+            const responseDiv = document.getElementById('responseDiv');
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = `<h3>Resposta:</h3><p>${response.response}</p>`;
+        }
+
+        // Evento ao clicar no botão de capturar
+        document.getElementById('captureButton').addEventListener('click', function() {
+            const url = document.getElementById('urlInput').value;
+            if (url.length > 0) {
+                sendUrlToServer(url);
+            } else {
+                alert('Por favor, insira uma URL válida.');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -11,7 +11,7 @@ load_dotenv()
 # Configure sua chave API do Google Generative AI
 API_KEY = os.environ['API_KEY']
 genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-1.5-flash')  # Substitua pelo modelo desejado
 
 
 @app.route('/submit_question', methods=['POST'])
@@ -19,7 +19,7 @@ def submit_question():
     data = request.json
     
     print(data)
-
+    
     # Verificar se "selectedText" está presente no corpo da requisição
     if not data or 'questions' not in data:
         print('error:' ' Nenhum dado ou texto selecionado enviado')
@@ -34,9 +34,10 @@ def submit_question():
     prompt = f"Responda a seguinte pergunta:\n\n{selected_text}\n"
 
     # Chamar a API do Gemini (ou outro modelo)
-    response = model.generate_content(prompt)
+    response = model.generate_content(prompt)  # Certifique-se que o método é suportado
     response_text = response.text.strip()
-
+    
+    
     print(response_text)
 
     # Retornar a resposta como um dicionário serializável em JSON
